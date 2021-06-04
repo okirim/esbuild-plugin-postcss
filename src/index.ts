@@ -9,13 +9,13 @@ import esbuild from 'esbuild';
 const readFile = util.promisify(fs.readFile);
 const ensureDir = util.promisify(fs.ensureDir);
 
-interface Ioptions{
+interface Options{
     rootDir?: string,
     plugins?: AcceptedPlugin[]
 }
 
 
-const postCssPlugin= (options: Ioptions = { plugins: [] }) => ({
+const postCssPlugin = (options: Options = { plugins: [] }) => ({
     name: "postcss",
     setup: function (build: esbuild.PluginBuild) {
         const { rootDir = options.rootDir || process.cwd() } = options;
@@ -33,7 +33,7 @@ const postCssPlugin= (options: Ioptions = { plugins: [] }) => ({
                 const tmpFilePath = path.resolve(tmpDir, `${sourceBaseName}.css`);
                 await ensureDir(tmpDir);
 
-                const css:any= await readFile(sourceFullPath);
+                const css= await readFile(sourceFullPath) as string;
               
                 const result: LazyResult= postcss(options.plugins).process(css, {
                     from: sourceFullPath,
